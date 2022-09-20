@@ -1,26 +1,25 @@
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-// Action
-const GET_MESSAGE = 'greetings/message';
-
-// Action Creator
-const getMessage = (message) => ({ type: GET_MESSAGE, payload: message});
-
-// Reducer
-export default function greetingsReducer(state = [], action = {}) {
-  switch (action.type) {
-    case GET_MESSAGE:
-      return action.payload;
-    default:
-      return state;
-  }
-}
-
-// Side Effects
-const fetchMessage = async () => {
-  await axios.get('api/messages').then((response) => {
-    return response.data.greeting
-  });
+const initialState = {
+  message: '',
 };
 
-export { fetchMessage, getMessage };
+export const getGreetingMessage = createAsyncThunk('getMessage', async () => {
+  const response = await fetch('api/messages');
+  const message = await response.json()
+  return message.greeting
+});
+
+export const greetingsSlice = createSlice({
+  name: 'greeting',
+  initialState,
+  extraReducers: {
+    [getGreetingMessage.fulfilled]: (state, action) => {
+      state.message = action.payload;
+    },
+  },
+});
+
+export const {} = greetingsSlice.actions;
+
+export default greetingsSlice.reducer;
