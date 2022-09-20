@@ -5,9 +5,8 @@ const initialState = {
 };
 
 export const getGreetingMessage = createAsyncThunk('getMessage', async () => {
-  const response = await fetch('api/messages');
-  const message = await response.json()
-  return message.greeting
+  const response = await fetch('api/messages').then((data) => data.json());
+  return response.greeting
 });
 
 export const greetingsSlice = createSlice({
